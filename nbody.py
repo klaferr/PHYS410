@@ -13,11 +13,11 @@ import matplotlib.colors
 
 epsil2 = 5      # the softening parameter
 e = 0           # the eccentricity of the orbit
-frequency = 10000
-h = 0.5        # the size of steps
-n = 50000      # the number of steps
-a = n - 3
-
+frequency = 1
+h = 0.005        # the size of steps
+n = 5      # the number of steps
+a = n - 2
+tn = n - 1
 # Read in the data from the file name given
 mass, x, y, z, x_dot, y_dot, z_dot = np.loadtxt("C:\\Users/Kris/PycharmProjects/senior_fall/phys410/data_Nparticles.txt", unpack=True)
 # Define the mass, position, velocity arrays
@@ -102,8 +102,8 @@ def leapfrog(derivs, froggy, dt, n, N, m):
 
             fig.colorbar(p, ax=ax)
             ax.set_zlim(-20, 20)
-            ax.set_xlim(-2000, 2000)
-            ax.set_ylim(-2000, 2000)
+            ax.set_xlim(-20, 20)
+            ax.set_ylim(-20, 20)
             plt.title('N-Body Simulation of 500 Particles in a Disk')
             ax.set_xlabel('x')
             ax.set_ylabel('y')
@@ -144,7 +144,7 @@ def com(data_array, time):
 
 
 r_com, v_com, Mass = com(trial, 0)
-tn = 49
+
 # trial = timestep, value, particle
 print('the angular momentum at time 0 is')
 ang_1, en_1 = vel_pos(trial, 0, r_com, Mass, v_com)
@@ -184,8 +184,8 @@ for i in range(0, N):
 # fig.colorbar(p, ax=ax)
 
 ax.set_zlim(-10, 10)
-ax.set_xlim(-200, 200)
-ax.set_ylim(-200, 200)
+ax.set_xlim(-20, 20)
+ax.set_ylim(-20, 20)
 
 plt.title('y vs. x for LF2 with e={0} and h={1}'.format(e, h))
 ax.set_xlabel('x')
