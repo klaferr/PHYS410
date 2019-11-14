@@ -13,14 +13,13 @@ import matplotlib.colors
 
 epsil2 = 5      # the softening parameter
 e = 0           # the eccentricity of the orbit
-frequency = 500
-h = 5        # the size of steps
-n = 200      # the number of steps
+frequency = 10000
+h = 0.5        # the size of steps
+n = 50000      # the number of steps
 a = n - 3
 
 # Read in the data from the file name given
 mass, x, y, z, x_dot, y_dot, z_dot = np.loadtxt("C:\\Users/Kris/PycharmProjects/senior_fall/phys410/data_Nparticles.txt", unpack=True)
-# data = util.get_dtype_and_load("C:\\Users/Kris/PycharmProjects/senior_fall/phys410/data_Nparticles.txt")
 # Define the mass, position, velocity arrays
 mass_array = mass
 pos_array = np.array([x, y, z])
@@ -51,6 +50,7 @@ y = np.transpose(y)
 
 N = len(mass)
 
+
 # Derivs function that outputs derivative information
 def derivs(N, pos, velo, eps2, m):
     vdot = gravity2(N, pos[:, 0:3], eps2, m)
@@ -63,7 +63,7 @@ def gravity2(N, pos, eps2, m):
     acc = np.zeros(pos.shape)
     for i in range(N):
         rs = pos[i] - pos  # array of relative position vectors
-        r2 = (rs ** 2).sum(axis=1) + (eps2) ** 2  # sq. dist. + eps2 for all pairs
+        r2 = (rs ** 2).sum(axis=1) #+ (eps2) ** 2  # sq. dist. + eps2 for all pairs
         # scalar part of accel. for all pairs
         ir3 = -1* np.divide(m * np.ones_like(r2), np.sqrt(r2) * r2, out=np.zeros_like(r2), where=r2 != 0)
         acc[i] = (ir3[:, np.newaxis] * rs).sum(axis=0)  # add accel.
@@ -101,9 +101,9 @@ def leapfrog(derivs, froggy, dt, n, N, m):
             p = ax.scatter(froggy[:, 1, i], froggy[:, 2, i], froggy[:, 3, i], '.', c=mass, norm=matplotlib.colors.LogNorm())
 
             fig.colorbar(p, ax=ax)
-            # ax.set_zlim(-20, 20)
-            # ax.set_xlim(-75, 75)
-            # ax.set_ylim(-75, 75)
+            ax.set_zlim(-20, 20)
+            ax.set_xlim(-2000, 2000)
+            ax.set_ylim(-2000, 2000)
             plt.title('N-Body Simulation of 500 Particles in a Disk')
             ax.set_xlabel('x')
             ax.set_ylabel('y')
@@ -118,12 +118,15 @@ trial = leapfrog(derivs, y, h, n, N, mass_array)
 
 def vel_pos(data, t, rcm, M, vcm):
     vel_t = np.sqrt( (data[:, 4, t])**2 + (data[:, 5, t])**2 + (data[:, 6, t])**2 )
+    x_cm = (data[:, 1, t] - rcm[0])**2 + (data[:, 2, t]-rcm[1])**2 + (data[:, 3, t]-rcm[2])**2
     pos_t = np.sqrt( (data[:, 1, t])**2 + (data[:, 2, t])**2 + (data[:, 3, t])**2 )
     # ke_0 = 0.5 * data[0, 0, :] * vel_t ** 2
     # pe_0 = 1
     # energy_0 = 0.5 * data[:, 0, t] * (data[:, 4:7, t]) ** 2  # + potential energy in gravity field?
-    ang_mom_0 = rcm*M*vcm + np.sum(data[:, 0, t] * vel_t * pos_t)
-    return ang_mom_0
+    # ang_mom_0 = rcm*M*vcm + np.sum(data[:, 0, t] * vel_t * pos_t)
+    ang_mom_0 = np.sum(data[:, 0, t] * vel_t * pos_t)
+    energy = np.sum(0.5*data[:, 0, t]*vel_t**2) + np.sum(M*data[:, 0, t]/x_cm)
+    return ang_mom_0, energy
 
 
 def com(data_array, time):
@@ -141,17 +144,18 @@ def com(data_array, time):
 
 
 r_com, v_com, Mass = com(trial, 0)
-
+tn = 49
 # trial = timestep, value, particle
 print('the angular momentum at time 0 is')
-test1 = vel_pos(trial, 0, r_com, Mass, v_com)
-print(test1)
+ang_1, en_1 = vel_pos(trial, 0, r_com, Mass, v_com)
+print(ang_1)
 
-r_com, v_com, Mass = com(trial, 199)
+r_com, v_com, Mass = com(trial, tn)
 print('the angular momentum at time end is')
-test2 = vel_pos(trial, 199, r_com, Mass, v_com)
-print(test2)
-
+ang_2, eng_2 = vel_pos(trial, tn, r_com, Mass, v_com)
+print(ang_2)
+print(en_1)
+print(eng_2)
 
 print('the max vy is ')
 print(np.max(trial[:, 4, a]))
@@ -175,12 +179,13 @@ print(np.average(np.sqrt((trial[:, 0, a])**2 + (trial[:, 1, a])**2 + (trial[:, 2
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 for i in range(0, N):
-    p = ax.plot(trial[i, 1, :], trial[i, 2, :], trial[i, 3, :], '--', label='Particle %f' % i)
+    ax.plot(trial[i, 1, 0:5], trial[i, 2, 0:5], trial[i, 3, 0:5], 'k.')
+    p = ax.plot(trial[i, 1, :], trial[i, 2, :], trial[i, 3, :], '.', label='Particle %f' % i)
 # fig.colorbar(p, ax=ax)
 
 ax.set_zlim(-10, 10)
-ax.set_xlim(-50, 50)
-ax.set_ylim(-50, 50)
+ax.set_xlim(-200, 200)
+ax.set_ylim(-200, 200)
 
 plt.title('y vs. x for LF2 with e={0} and h={1}'.format(e, h))
 ax.set_xlabel('x')
@@ -191,12 +196,12 @@ plt.show()
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-rs=np.zeros((200, 3))
-vs= np.zeros((200, 3))
-ms= np.zeros(200)
-for i in range(0, 200):
+rs=np.zeros((tn, 3))
+vs= np.zeros((tn, 3))
+ms= np.zeros(tn)
+for i in range(0, tn):
     rs[i, 0:3], vs[i], ms[i] = com(trial, i)
 
 plt.plot(rs[:, 0], rs[:, 1], rs[:, 2], 'g.')
-print(rs[199, 0], rs[199, 1], rs[199, 2])
+print(rs[tn-1, 0], rs[tn-1, 1], rs[tn-1, 2])
 plt.show()

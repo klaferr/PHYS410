@@ -12,30 +12,31 @@ from mpl_toolkits.mplot3d import Axes3D
 
 # Define the number of particles
 N = 150
-radius_out = 10
-radius_in = 5
-radius_ratio = radius_out/radius_in
+# radius_out = 10
+# radius_in = 5
+# radius_ratio = radius_out/radius_in
+radius = 10
 
 # Define an array of the positions of the particles as random numbers in the range of [0,50). These two arrays will
 # include the x, y and z positions meaning that all of the particles will be confined to a torus with outer radius 10.
-# pos = radius_out*np.random.uniform(-1, 1, size=(N, 2))    # defines positions from the min radius to the outer
-# for i in range(0, N):
-    # value = np.sqrt(pos[i, 0]**2 + pos[i, 1]**2)
-    # while radius_out < value < radius_in:
+pos = radius*np.random.uniform(-1, 1, size=(N, 2))    # defines positions from the min radius to the outer
+for i in range(0, N):
+    value = np.sqrt(pos[i, 0]**2 + pos[i, 1]**2)
+    # while radius < value < radius_in:
     #     pos[i, :] = radius_in * np.random.uniform(-1, 1, size=(1, 2))
     #     value = np.sqrt(pos[i, 0]**2 + pos[i, 1]**2)
 # pos_z = np.random.uniform(-2, 2, size=(N, 1))
 
 # to build a torus
-theta = np.random.uniform(0, 2*np.pi, size=(N, 1))
-phi = np.random.uniform(0, 2*np.pi, size=(N, 1))
-# phi = np.linspace(0, 2*np.pi, N)
+# theta = np.random.uniform(0, 2*np.pi, size=(N, 1))
+# phi = np.random.uniform(0, 2*np.pi, size=(N, 1))
+phi = np.linspace(0, 2*np.pi, N)
 # theta, phi = np.meshgrid(theta, phi)
 pos = np.zeros((N, 3))
-for i in range(0, N):
-    pos[i, 0] = (radius_out + radius_in*np.cos(theta[i]))*np.cos(phi[i])
-    pos[i, 1] = (radius_out + radius_in*np.cos(theta[i]))*np.sin(phi[i])
-    pos[i, 2] = radius_in*np.sin(theta[i])
+# for i in range(0, N):
+#     pos[i, 0] = (radius_out + radius_in*np.cos(theta[i]))*np.cos(phi[i])
+#     pos[i, 1] = (radius_out + radius_in*np.cos(theta[i]))*np.sin(phi[i])
+#     pos[i, 2] = radius_in*np.sin(theta[i])
 # x = radius_out + radius_in*np.cos(theta)*np.cos(phi)
 # y = radius_out + radius_in*np.cos(theta)*np.sin(phi)
 # z = radius_in*np.sin(theta)
