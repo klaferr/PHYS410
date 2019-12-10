@@ -7,4 +7,6 @@ To produce the data file, run make_data.py
 To run the N-body code, run the nbody_final.py ( Please be aware of the number of outputs)
 Both of these require python 3.7
 
+To access results that we've completed, go to /kris/matt/
+
 Thank you!
