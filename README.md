@@ -1,8 +1,10 @@
 # PHYS410
 Group: Claire Hinrichs, Kris Laferriere, Matt Wilkin (I love how this is alphabetical for first and last names)
-Last updated: 10/23/19
-Project Title: TBA
+Last updated: 12/9/2019
+Project Title: Investigation of Dynamics of Protoplanetary Disks
 
-This is the go to place for all the code relating to our 410 project. 
-Please!! Version!! Control!! This is in case we break it down the line!
-Also, comment your codes however, I will be doing the full work through of commenting it for the final producable. 
+To produce the data file, run make_data.py
+To run the N-body code, run the nbody_final.py ( Please be aware of the number of outputs)
+Both of these require python 3.7
+
+Thank you!
